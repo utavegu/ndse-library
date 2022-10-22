@@ -11,4 +11,21 @@ const multerSetup = {
 
 const storage = multer.diskStorage(multerSetup);
 
-module.exports = multer({ storage });
+const allowedTypes = [
+  'text/plain',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.oasis.opendocument.text',
+  'application/pdf'
+];
+
+const fileFilter = (req, file, cb) => {
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true)
+  } else {
+    cb(null, false)
+  }
+};
+
+
+module.exports = multer({ storage, fileFilter });
