@@ -3,7 +3,7 @@ const path = require('path');
 const Book = require('../models/book');
 const fakeDatabase = require('../data/fake-database');
 const findBook = require('../utils/find-book');
-const fileMulter = require('../middleware/upload-file')
+const fileMulter = require('../middleware/upload-file');
 
 const router = express.Router();
 
@@ -16,27 +16,24 @@ router.get(
 
 router.post(
   '/',
+  fileMulter.single('fileBook'),
   (request, responce) => {
-    const { id: requestID, title, description, authors, favorite, fileCover, fileName } = request.body;
-    const newBook = new Book(requestID, title, description, authors, favorite, fileCover, fileName);
-    books.push(newBook);
-    responce
-      .status(201)
-      .json(newBook);
+    if (request.file) {
+      const { path } = request.file
+      const { id: requestID, title, description, authors, favorite, fileCover, fileName } = request.body;
+      const newBook = new Book(requestID, title, description, authors, favorite, fileCover, fileName, path);
+      books.push(newBook);
+      responce
+        .status(201)
+        .json(newBook);
+    } else {
+      responce
+        .json({
+          message: 'Не выбран файл для загрузки или неподходящий формат (используйте .txt, .doc, .docx или .pdf)'
+        })
+    }
   }
 );
-
-// "Созданную Middleware подключить и обработать в роутах создания данных о книге." (с) Из задания. Не понимаю как это сделать именно так.
-router.post(
-  '/upload',
-  fileMulter.single('book'), // Не особо понял что это за аргумент, который принимает single. И как с этим работать на фронтенде. Это какой-то объект, передаваемый с клиента, у которого ключ будет "атрибут single", а значение - загруженный файл?
-  (req, res) => {
-    if (req.file) {
-      const { path } = req.file
-      res.json({ path })
-    }
-    res.json() // Это точно корректный ответ? (взял из примера в лекции)
-  })
 
 router.get(
   '/:id',

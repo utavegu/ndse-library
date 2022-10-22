@@ -15,7 +15,6 @@ router.get(
 
       GET: /api/books - запрос всей библиотеки
       POST: /api/books - добавление новой книги
-      POST: /api/books/upload - загрузка файла книги
       GET: /api/books/:id - запрос информации об одной книге
       PUT: /api/books/:id - изменение данных о уже имеющейся в библиотеке книге
       DELETE: /api/books/:id - удаление данных о книге из библиотеки
