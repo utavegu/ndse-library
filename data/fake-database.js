@@ -1,7 +1,5 @@
 const Book = require('../models/book');
 
-// 1) Можно ли в этом пути опустить public?
-// 2) Когда пользователь создает данные о новой книге - ему нужно прямо весь вот этот путь передавать? Как-то очень не юзабилити
 const bookshelf = 'public/books/';
 
 const fakeDatabase = {
