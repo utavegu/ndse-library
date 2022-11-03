@@ -26,7 +26,7 @@ router.get(
   (_, responce) => {
     responce.render("books/create", {
       title: "Создание книги",
-      book: '',
+      book: '', // ПОЧЕМУ ЭТО ВООБЩЕ РАБОТАЕТ?! (а без такого приема - не работает)
     })
   }
 );
