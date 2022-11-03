@@ -1,21 +1,18 @@
 const express = require('express');
 const logger = require('./middleware/logger');
 const error404 = require('./middleware/404');
-const mainPageRouting = require('./routes/main')
+const instructionRouting = require('./routes/instruction')
 const authRouting = require('./routes/auth');
 const booksRouting = require('./routes/books');
 
 const app = express();
 app.use(express.json());
 
-app.use(express.urlencoded());
-app.set("view engine", "ejs");
-
 app.use(logger);
 
-app.use('/', mainPageRouting);
+app.use('/', instructionRouting);
 app.use('/api/user/login', authRouting);
-app.use('/books', booksRouting);
+app.use('/api/books', booksRouting);
 
 app.use(error404);
 
