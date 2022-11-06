@@ -1,0 +1,29 @@
+services:
+
+  storage:
+    container_name: storage-container
+    image: redis:7.0.5 # но это не точно!!! Зайди в версию с этим тэгом и почитай ее описание
+    volumes:
+      - ./data:/data 
+
+  counter:
+    container_name: counter-container
+    build: ./counter
+    ports:
+      - 4001:3001
+    environment:
+      - PORT=3001
+      - REDIS_URL=redis://storage
+    depends_on:
+      - storage
+
+  library:
+    container_name: library-container
+    build: ./library
+    ports:
+      - 4002:3002
+    environment:
+      - PORT=3002
+    depends_on:
+      - counter
+    

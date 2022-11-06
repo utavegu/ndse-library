@@ -12,6 +12,6 @@ COPY src/ ./
 RUN npm install -g npm@8.19.3
 RUN npm i
 
-EXPOSE 3001
+EXPOSE 3002
 
 CMD [ "node", "index.js" ]
