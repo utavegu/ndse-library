@@ -6,7 +6,7 @@ router.get(
   '/',
   (_, responce) => {
     responce.send(`
-      Сервер успешно запущен на ${process.env.PORT || 3001} порту
+      Сервер успешно запущен на ${process.env.PORT || 3002} порту
       Инструкция к API:
       POST: /api/user/login - псевдоавторизация
       GET: /api/books - запрос всей библиотеки

@@ -8,6 +8,8 @@ const booksRouting = require('./routes/books');
 const app = express();
 app.use(express.json());
 
+const PORT = process.env.PORT || 3002;
+
 // app.use(logger); // Потерял в контейнере директорию и файл сервера, надо разобраться
 
 app.use('/', instructionRouting);
@@ -16,5 +18,6 @@ app.use('/api/books', booksRouting);
 
 app.use(error404);
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT);
+app.listen(PORT, () => {
+  console.log(`Сервер библиотеки слушает на ${PORT} порту!`);
+})

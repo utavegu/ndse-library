@@ -1,0 +1,39 @@
+# Короче для общего развития неплохо бы сделать так, чтобы и через этот файл заработало
+
+services:
+
+  storage:
+    container_name: storage-container
+    image: redis
+    volumes:
+      - ./data:/data
+
+  counter:
+    container_name: counter-container
+    image: node:18.12-alpine
+    volumes:
+      - ./counter:/app
+    ports:
+      - 82:3001
+    environment:
+      - PORT=3001
+      - REDIS_URL=redis://storage
+    working_dir: /app
+    depends_on:
+      - storage
+    command: ["npm", "run", "dev"]
+
+  library:
+    container_name: library-container
+    image: node:18.12-alpine
+    volumes:
+      - ./library:/app
+    ports:
+      - 81:3002
+    environment:
+      - PORT=3002
+    working_dir: /app
+    depends_on:
+      - counter
+    command: ["npm", "run", "dev"]
+    
