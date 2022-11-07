@@ -33,7 +33,11 @@ class Book {
     /**
      * Файл самой книги, строка
      */
-    fileBook = ''
+    fileBook = '',
+    /**
+     * Количество просмотров книги
+     */
+    counter = '0'
   ) {
     this.id = id || uuid(); // Поленился вбить нормальный артикул - получи абракадабру
     this.title = title;
@@ -43,6 +47,7 @@ class Book {
     this.fileCover = fileCover || "Не понятно что за поле";
     this.fileName = fileName || "Не понятно что за поле"; // Это чтобы я не забывал, что так тоже можно (способ до появления ЕС6)
     this.fileBook = fileBook;
+    this.counter = counter;
   }
 };
 

@@ -2,7 +2,7 @@ services:
 
   storage:
     container_name: storage-container
-    image: redis:7.0.5 # но это не точно!!! Зайди в версию с этим тэгом и почитай ее описание
+    image: redis:7.0
     volumes:
       - ./data:/data 
 
@@ -24,6 +24,7 @@ services:
       - 4002:3002
     environment:
       - PORT=3002
+      - COUNTER_URL=http://counter:3001
     depends_on:
       - counter
     

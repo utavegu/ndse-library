@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const http = require('http');
 const Book = require('../models/book');
 const fakeDatabase = require('../data/fake-database');
 const findBook = require('../utils/find-book');
@@ -8,6 +9,8 @@ const fileMulter = require('../middleware/upload-file');
 const router = express.Router();
 
 const { books } = fakeDatabase;
+
+const COUNTER_URL = process.env.COUNTER_URL || 'http://counter:3001';
 
 router.get(
   '/',
@@ -40,7 +43,28 @@ router.get(
   (request, responce) => {
     const targetBookIndex = findBook(books, request)
     if (targetBookIndex !== -1) {
-      responce.json(books[targetBookIndex]);
+      const counterRequest = http.request(
+        `${COUNTER_URL}/counter/${books[targetBookIndex].id}/incr`,
+        {method: "POST"},
+        (callback) => {
+          let responceBody = '';
+          callback.setEncoding("utf8");
+          callback.on("data", (chunk) => {
+            responceBody += chunk;
+          })
+          callback.on("end", () => {
+            try {
+              let parsedData = JSON.parse(responceBody);
+              let counter = parsedData.counter;
+              books[targetBookIndex].counter = counter;
+              responce.json(books[targetBookIndex]);
+            } catch (error) {
+              console.error(error.message)
+            }
+          })
+        }
+      )
+      counterRequest.end();
     } else {
       responce
         .status(404)

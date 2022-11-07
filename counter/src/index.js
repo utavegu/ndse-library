@@ -23,7 +23,7 @@ app.post('/counter/:bookId/incr', async (req, res) => {
   const { bookId } = req.params;
   const cnt = await client.incr(bookId);
 
-  res.json({ message: `Cчетчик книги: ${bookId} теперь равен: ${cnt}` });
+  res.json({ counter: cnt });
 })
 
 app.listen(PORT, () => {
