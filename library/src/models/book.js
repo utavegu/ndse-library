@@ -1,54 +1,41 @@
-const { v4: uuid } = require('uuid');
+const { Schema, model } = require('mongoose');
 
-class Book {
-  constructor(
-    /**
-     * Уникальный идентификатор книги, строка
-     */
-    id,
-    /**
-     * Название книги, строка
-     */
-    title = "Заголовок книги",
-    /**
-     * Краткое описание книги, строка
-     */
-    description = "Краткое описание книги",
-    /**
-     * Автор(ы) книги, строка
-     */
-    authors = "Автор(ы)",
-    /**
-     * Неизвестное поле 1, строка
-     */
-    favorite,
-    /**
-     * Неизвестное поле 2, строка
-     */
-    fileCover,
-    /**
-     * Неизвестное поле 3, строка
-     */
-    fileName,
-    /**
-     * Файл самой книги, строка
-     */
-    fileBook = '',
-    /**
-     * Количество просмотров книги
-     */
-    counter = '0'
-  ) {
-    this.id = id || uuid(); // Поленился вбить нормальный артикул - получи абракадабру
-    this.title = title;
-    this.description = description;
-    this.authors = authors;
-    this.favorite = favorite || "Не понятно что за поле";
-    this.fileCover = fileCover || "Не понятно что за поле";
-    this.fileName = fileName || "Не понятно что за поле"; // Это чтобы я не забывал, что так тоже можно (способ до появления ЕС6)
-    this.fileBook = fileBook;
-    this.counter = counter;
-  }
-};
+const bookSchema = new Schema({
+  title: {
+    type: String,
+    required: true,
+    default: "Название книги",
+  },
+  description: {
+    type: String,
+    required: true,
+    default: "Краткое описание книги",
+  },
+  authors: {
+    type: String,
+    required: true,
+    default: "Автор(-ы)",
+  },
+  favorite: {
+    type: String,
+    default: "Избранное",
+  },
+  fileCover: {
+    type: String,
+    default: "Обложка книги",
+  },
+  fileName: {
+    type: String,
+    default: "Имя скачиваемого файла книги",
+  },
+  fileBook: {
+    type: String,
+    default: "Путь до книги для скачивания",
+  },
+  counter: {
+    type: String,
+    default: "0",
+  },
+})
 
-module.exports = Book;
+module.exports = model('Book', bookSchema)
