@@ -2,23 +2,16 @@ const express = require('express');
 // const path = require('path');
 // const http = require('http');
 
-const Book = require('../models/book');
+// const Book = require('../models/book');
 // const fileMulter = require('../middleware/upload-file');
 
 const router = express.Router();
 
+const BooksController = require('../controllers/BooksController');
+
 // const COUNTER_URL = process.env.COUNTER_URL || 'http://counter:3001';
 
-router.get('/', async (_, responce) => {
-  try {
-    const books = await Book.find().select('-__v')
-    responce.json(books)
-  } catch (error) {
-    responce
-      .status(500)
-      .json(error)
-  }
-});
+router.get('/', BooksController.getAllBooks);
 
 /*
 router.get(
@@ -57,17 +50,7 @@ router.get(
 )
 */
 
-router.get('/:id', async (request, responce) => {
-  const { id } = request.params
-  try {
-    const book = await Book.findById(id).select('-__v')
-    responce.json(book)
-  } catch (error) {
-    responce
-      .status(404)
-      .json({ data: null, message: 'Такая книга не найдена!' });
-  }
-});
+router.get('/:id', BooksController.getBook);
 
 /*
 router.post(
@@ -92,42 +75,9 @@ router.post(
 );
 */
 
-router.post('/', async (request, responce) => {
-  const { title, description, authors, favorite, fileCover, fileName, fileBook } = request.body
-  const newBook = new Book({ title, description, authors, favorite, fileCover, fileName, fileBook })
-  try {
-    await newBook.save()
-    responce.json(newBook)
-  } catch (error) {
-    responce
-      .status(500)
-      .json(error)
-  }
-});
-
-router.put('/:id', async (request, responce) => {
-  const { id } = request.params
-  try {
-    await Book.findByIdAndUpdate(id, { ...request.body })
-    responce.redirect(`/api/books/${id}`)
-  } catch (e) {
-    responce
-        .status(404)
-        .json({ data: null, message: 'Такая книга не найдена!' });
-  }
-});
-
-router.delete('/:id', async (request, responce) => {
-  const { id } = request.params
-  try {
-    await Book.deleteOne({ _id: id })
-    responce.json({ message: `Книга успешно удалена!` })
-  } catch (error) {
-    responce
-      .status(500)
-      .json(error)
-  }
-});
+router.post('/', BooksController.createBook);
+router.put('/:id', BooksController.updateBook);
+router.delete('/:id', BooksController.deleteBook);
 
 /*
 router.get(
