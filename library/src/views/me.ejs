@@ -1,0 +1,11 @@
+<p>
+  <b>ID:</b>         <%= user.id %><br />
+  <b>Имя библиотекаря:</b>   <%= user.username %><br />
+  <b>Права на управление библиотекой действуют до:</b>       <%= user.accessOpenUntil %><br />
+  <% if (user.emails) { %>
+      <b>Email:</b>  <%= user.emails[0].value %><br />
+  <% } %>
+</p>
+<a href="/user/logout">Выйти</a>
+
+<p>Вернуться на <a href="/user">главную</a>.</p>

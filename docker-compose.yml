@@ -18,7 +18,7 @@ services:
   #     - storage
 
   mongo:
-    container_name: database
+    container_name: database-container
     image: mongo
     volumes:
       - ./data/mongo:/data/db 
@@ -28,7 +28,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
 
   mongo-express:
-    container_name: admin-panel
+    container_name: admin-panel-container
     image: mongo-express
     restart: always
     ports:
