@@ -50,6 +50,9 @@ services:
       - MONGODB_LOGIN=root
       - MONGODB_PASSWORD=example
       - DB_NAME=library
+    volumes:
+    # А вот это вторая составляющая разработки без перезапуска контейнера. Надо ее оставлять в композ-дев. В продакшн-композ это тащить не надо
+      - ./library/src:/app/src
     depends_on:
       # - counter
       - mongo
