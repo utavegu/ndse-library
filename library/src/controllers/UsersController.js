@@ -2,7 +2,7 @@ const User = require('../models/user');
 
 // TODO: Нужны ли асинк-эвэйты, если нет обращения к базе?
 
-class BooksController {
+class UsersController {
 
   renderHomePage(req, res) {
     res.render('home', { user: req.user })
@@ -51,6 +51,17 @@ class BooksController {
     res.redirect('/user')
   }
 
+  checkAuthenticated(req, res, next) {
+    if (!req.isAuthenticated()) {
+      return res.redirect('/user/login')
+    }
+    next()
+  }
+
+  renderProfilePage(req, res) {
+    res.render('profile', { user: req.user })
+  }
+
 }
 
-module.exports = new BooksController();
+module.exports = new UsersController();
