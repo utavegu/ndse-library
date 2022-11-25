@@ -5,11 +5,11 @@ const User = require('../models/user');
 class UsersController {
 
   renderHomePage(req, res) {
-    res.render('home', { user: req.user })
+    res.render('user/home', { user: req.user })
   }
 
   renderLoginPage(_, res) {
-    res.render('login')
+    res.render('user/login')
   }
 
   signIn(_, res) {
@@ -17,7 +17,7 @@ class UsersController {
   }
 
   renderSignUpPage(_, res) {
-    res.render('signup')
+    res.render('user/signup')
   }
 
   async signUp(req, res) {
@@ -59,7 +59,7 @@ class UsersController {
   }
 
   renderProfilePage(req, res) {
-    res.render('profile', { user: req.user })
+    res.render('user/profile', { user: req.user })
   }
 
 }

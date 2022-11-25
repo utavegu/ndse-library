@@ -98,6 +98,14 @@ class BooksController {
     }
   }
 
+  // Круто... только вот что мне в постмане/на фронте сделать нужно, чтобы прав было достаточно? TODO: Поиграйся с авторизацией в шаблонах и посмотри что происходит в кукисах и заголовках
+  protectBook(request, responce, next) {
+    if (!request.isAuthenticated()) {
+      return responce.json({message: 'У вас недостаточно правдля осуществления данной операции!'})
+    }
+    next()
+  }
+
 }
 
 module.exports = new BooksController();

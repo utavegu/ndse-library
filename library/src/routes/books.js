@@ -75,9 +75,9 @@ router.post(
 );
 */
 
-router.post('/', BooksController.createBook);
-router.put('/:id', BooksController.updateBook);
-router.delete('/:id', BooksController.deleteBook);
+router.post('/', BooksController.protectBook, BooksController.createBook);
+router.put('/:id', BooksController.protectBook, BooksController.updateBook);
+router.delete('/:id', BooksController.protectBook, BooksController.deleteBook);
 
 /*
 router.get(

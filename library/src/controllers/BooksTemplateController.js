@@ -126,6 +126,13 @@ class BooksTemplateController {
     }
   }
 
+  // Только есть проблема, что такой способ к бесконечной загрузке приводит. Это, конечно, не правильно.
+  protectBook(req, res, next) {
+    if (!req.isAuthenticated()) {
+      return console.log('Не достаточно прав для данного действия с книгой!')
+    }
+    next()
+  }
 
 }
 

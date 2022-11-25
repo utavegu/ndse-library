@@ -9,7 +9,11 @@ const router = express.Router();
 router.get('/', BooksTemplateController.getAllBooksPage);
 
 // Переход на страницу создания книги
-router.get('/create', BooksTemplateController.getCreateNewBookPage);
+router.get(
+  '/create',
+  BooksTemplateController.protectBook,
+  BooksTemplateController.getCreateNewBookPage
+);
 
 // Добавление книги
 router.post(
@@ -25,10 +29,18 @@ router.get(
 )
 
 // Удаление книги
-router.post('/delete/:id', BooksTemplateController.deleteBook);
+router.post(
+  '/delete/:id',
+  BooksTemplateController.protectBook,
+  BooksTemplateController.deleteBook
+);
 
 // Переход на страницу редактирования выбранной книги
-router.get('/update/:id', BooksTemplateController.getEditBookPage);
+router.get(
+  '/update/:id',
+  BooksTemplateController.protectBook,
+  BooksTemplateController.getEditBookPage
+);
 
 // Редактирование книги
 router.post(

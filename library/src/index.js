@@ -1,7 +1,5 @@
 /*
 TODO
-- Подружить шаблоны книг и юзера, защитить ручки удаления и добавления
-- Переделать инструкшн
 - Вернуть ручкам функциональность счетчика и загрузки/скачивания книги (для АПИ тоже) (заодно переименуй его контроллер и роутер)
 - Сделать чтобы логгер работал и в контейнере. И побольше бы данных туда еще. Погугли какую еще инфу умеет нода доставать. Как минимум неплохо бы еще ОС юзера доставать и вообще побольше инфы о нем.
 - Когда все заработает, зафиксируй версии монг в докер-композе (возьми те, что как лэйтест на текущий момент)
@@ -23,7 +21,7 @@ const LocalStrategy = require('passport-local').Strategy;
 // const logger = require('./middleware/logger');
 const error404 = require('./middleware/404');
 
-const instructionRouting = require('./routes/instruction') // Тут сделай какое-нибудь приветствие со ссылкой на книги и объявление, что добавлять и удалять книги могут только зарегистрированные пользователи
+const mainPageRouting = require('./routes/main');
 const authRouting = require('./routes/auth');
 const booksRouting = require('./routes/books');
 const booksTemplateRouting = require('./routes/books-templates');
@@ -65,7 +63,7 @@ app
   .use(passport.initialize())
   .use(passport.session())
   // app.use(logger); // Потерял в контейнере директорию и файл сервера, надо разобраться
-  .use('/', instructionRouting)
+  .use('/', mainPageRouting)
   .use('/user', authRouting)
   .use('/api/books', booksRouting)
   .use('/books', booksTemplateRouting)
