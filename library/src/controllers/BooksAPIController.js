@@ -1,3 +1,5 @@
+const path = require('path');
+
 const Book = require('../models/book');
 
 class BooksController {
@@ -41,8 +43,8 @@ class BooksController {
   }
 
   async createBook(request, responce) {
-    const newBook = new Book(request.body)
-    // TODO: А вот каунтер убирай при создании каким-нибудь способом, либо всегда 0 (что и будет, если его убрать, так как в модели дефолтное значение как раз 0)
+    const newBook = new Book({ ...request.body, fileBook: request.file ? request.file.path : "" })
+    // TODO: А вот каунтер убирай при создании каким-нибудь способом, либо всегда 0 (что и будет, если его убрать, так как в модели дефолтное значение как раз 0)... поидее в обект выше можно добавить "каунтер: 0, но эффект будет ровно тот же, как если он не прилетит из формы"
     try {
       await newBook.save()
       responce
@@ -104,6 +106,28 @@ class BooksController {
       return responce.json({message: 'У вас недостаточно правдля осуществления данной операции!'})
     }
     next()
+  }
+
+  async downloadBook(request, responce) {
+    const { id } = request.params
+    try {
+      const book = await Book.findById(id).select('-__v')
+      const downloadErrorHandler = (error) => {
+        if (error) {
+          responce
+            .json(error);
+        }
+      }
+      responce.download(
+        book.fileBook,
+        `${book.title}${path.extname(book.fileBook)}`,
+        downloadErrorHandler
+      );
+    } catch (error) {
+      responce
+        .status(404)
+        .redirect('/404')
+    }
   }
 
 }
