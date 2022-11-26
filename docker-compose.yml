@@ -13,7 +13,7 @@ services:
       - 4001:3001
     environment:
       - PORT=3001
-      - REDIS_URL=redis://storage
+      - REDIS_URL=$REDIS_URL
     depends_on:
       - storage
 
@@ -25,8 +25,8 @@ services:
       - ./data/mongo:/data/db
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_USERNAME: $MONGO_LOGIN
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_PASSWORD
 
   mongo-express:
     container_name: admin-panel-container
@@ -35,22 +35,23 @@ services:
     ports:
       - 8081:8081
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_MONGODB_ADMINUSERNAME: $MONGO_LOGIN
+      ME_CONFIG_MONGODB_ADMINPASSWORD: $MONGO_PASSWORD
+      ME_CONFIG_MONGODB_URL: $MONGO_ADMIN_PANEL_CONFIG
 
   library:
     container_name: library-container
     build: ./library
     ports:
       - 4002:3002
+    env_file: .env
     environment:
       - PORT=3002
-      - COUNTER_URL=http://counter:3001
-      - MONGODB_URL=mongodb://mongo:27017
-      - MONGODB_LOGIN=root
-      - MONGODB_PASSWORD=example
-      - DB_NAME=library
+      - COUNTER_URL=$COUNTER_URL
+      - MONGODB_URL=$MONGODB_URL
+      - MONGODB_LOGIN=$MONGO_LOGIN
+      - MONGODB_PASSWORD=$MONGO_PASSWORD
+      - DB_NAME=$MONGO_DB_NAME
     volumes:
       # А вот это вторая составляющая разработки без перезапуска контейнера. Надо ее оставлять в композ-дев. В продакшн-композ это тащить не надо
       - ./library/src:/app/src
