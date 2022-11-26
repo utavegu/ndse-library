@@ -14,7 +14,7 @@ router.get(
 // Переход на страницу создания книги
 router.get(
   '/create',
-  BooksTemplateController.protectBook,
+  // BooksTemplateController.protectBook,
   BooksTemplateController.getCreateNewBookPage
 );
 
@@ -34,14 +34,14 @@ router.get(
 // Удаление книги
 router.post(
   '/delete/:id',
-  BooksTemplateController.protectBook,
+  // BooksTemplateController.protectBook,
   BooksTemplateController.deleteBook
 );
 
 // Переход на страницу редактирования выбранной книги
 router.get(
   '/update/:id',
-  BooksTemplateController.protectBook,
+  // BooksTemplateController.protectBook,
   BooksTemplateController.getEditBookPage
 );
 

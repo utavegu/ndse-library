@@ -18,20 +18,21 @@ router.get(
 
 router.post(
   '/',
-  BooksAPIController.protectBook,
+  // BooksAPIController.protectBook,
   fileMulter.single('fileBook'),
   BooksAPIController.createBook
 );
 
 router.put(
   '/:id',
-  BooksAPIController.protectBook,
+  // BooksAPIController.protectBook,
+  fileMulter.single('fileBook'),
   BooksAPIController.updateBook
 );
 
 router.delete(
   '/:id',
-  BooksAPIController.protectBook,
+  // BooksAPIController.protectBook,
   BooksAPIController.deleteBook
 );
 

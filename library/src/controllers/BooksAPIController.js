@@ -93,10 +93,12 @@ class BooksController {
   }
 
   async updateBook(request, responce) {
-    // TODO: ДОДЕЛАТЬ
     const { id } = request.params
     try {
-      await Book.findByIdAndUpdate(id, request.body)
+      await Book.findByIdAndUpdate(
+        id,
+        { ...request.body, fileBook: request.file ? request.file.path : '' }
+      )
       responce
         .status(301)
         .redirect(`/api/books/${id}`)

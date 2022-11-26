@@ -103,6 +103,7 @@ class BooksTemplateController {
     try {
       await Book.findByIdAndUpdate(
         id,
+        // TODO: Вообще надо бы еще обработать ситуацию, что если книга уже была загружена, то не затирать путь до нее, если при редактировании поле было пустым
         { ...request.body, fileBook: request.file ? request.file.path : '' }
       )
       responce
