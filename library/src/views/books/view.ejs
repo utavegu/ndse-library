@@ -21,6 +21,10 @@
             Автор(ы): <%= book.authors %>
           </p>
 
+          <p class="card-text">
+            Количество просмотров книги: <%= book.counter %>
+          </p>
+
           <div class="text-left">
             <a class="btn btn-sm btn-primary" href="/books/update/<%= book.id %>">
               <i class="fa fa-pencil" aria-hidden="true"></i>

@@ -69,3 +69,4 @@ src/server.log
 
 dump.rdb
 mongo/
+redis/

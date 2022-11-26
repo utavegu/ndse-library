@@ -6,7 +6,10 @@ const BooksTemplateController = require('../controllers/BooksTemplateController'
 const router = express.Router();
 
 // Отрисовка страницы всех книг
-router.get('/', BooksTemplateController.getAllBooksPage);
+router.get(
+  '/',
+  BooksTemplateController.getAllBooksPage
+);
 
 // Переход на страницу создания книги
 router.get(
@@ -51,6 +54,9 @@ router.post(
 
 // Переход на страницу выбранной книги
 // Тебе надо быть в самом низу, иначе не дашь дорогу другим роутам. Это только так решается, или есть что-то типа Реакт-роутеровского экзакта?
-router.get('/:id', BooksTemplateController.getTargetBookPage)
+router.get(
+  '/:id',
+  BooksTemplateController.getTargetBookPage
+)
 
 module.exports = router;

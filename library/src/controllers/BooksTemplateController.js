@@ -1,5 +1,9 @@
+const http = require('http');
 const path = require('path');
+
 const Book = require('../models/book');
+
+const COUNTER_URL = process.env.COUNTER_URL || 'http://counter:3001'; // TODO: В сетап джээс
 
 class BooksTemplateController {
 
@@ -114,15 +118,46 @@ class BooksTemplateController {
   async getTargetBookPage(request, responce) {
     const { id } = request.params
     try {
-      const book = await Book.findById(id).select('-__v')
-      responce
-        .status(200)
-        .render("books/view", {
-          title: "Просмотр книги",
-          book,
+      const COUNTER_REQUEST_ENDPOINT = `${COUNTER_URL}/counter/${id}/incr`;
+      const counterRequestSetup = { method: "POST" };
+      const counterRequestCallback = (callback) => {
+        let responceBody = '';
+        callback.setEncoding("utf8");
+        callback.on("data", (chunk) => {
+          responceBody += chunk;
         })
+        callback.on("end", async () => {
+          try {
+            // TODO: Это вроде асинхронщина и эвэйт тут лишним не будет, почитай на эту тему
+            let parsedData = await JSON.parse(responceBody);
+            let counter = parsedData.counter;
+            // TODO: Это, вроде, можно одним запросом сделать
+            await Book.findByIdAndUpdate(id, { $set: { counter: counter } })
+            const book = await Book.findById(id).select('-__v')
+            responce
+              .status(200)
+              .render("books/view", {
+                title: "Просмотр книги",
+                book,
+              })
+          } catch (error) {
+            console.error(error.message)
+          }
+        })
+      }
+
+      const counterRequest = http.request(
+        COUNTER_REQUEST_ENDPOINT,
+        counterRequestSetup,
+        counterRequestCallback
+      )
+
+      counterRequest.end();
+
     } catch (error) {
-      responce.redirect('/404')
+      responce
+        .status(404)
+        .redirect('/404')
     }
   }
 
