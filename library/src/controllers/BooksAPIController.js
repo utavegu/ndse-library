@@ -24,7 +24,7 @@ class BooksController {
     }
   }
 
-  async getBook(request, responce) {
+  getBook(request, responce) {
     const { id } = request.params
     try {
       const COUNTER_REQUEST_ENDPOINT = `${COUNTER_URL}/counter/${id}/incr`;

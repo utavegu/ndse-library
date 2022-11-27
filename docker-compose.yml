@@ -1,7 +1,7 @@
 services:
 
   storage:
-    container_name: storage-container
+    container_name: redis-storage-container
     image: redis:7.0
     volumes:
       - ./data/redis:/data
@@ -19,17 +19,19 @@ services:
 
   # Тут нигде не сказано, но монга доступна вот на этом порту: 27017 (внешнем или внутреннем?)
   mongo:
-    container_name: database-container
+    container_name: mongo-database-container
     image: mongo
     volumes:
       - ./data/mongo:/data/db
     restart: always
+    # ports:
+    #   - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: $MONGO_LOGIN
       MONGO_INITDB_ROOT_PASSWORD: $MONGO_PASSWORD
 
   mongo-express:
-    container_name: admin-panel-container
+    container_name: mongo-admin-panel-container
     image: mongo-express
     restart: always
     ports:
@@ -37,7 +39,9 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: $MONGO_LOGIN
       ME_CONFIG_MONGODB_ADMINPASSWORD: $MONGO_PASSWORD
-      ME_CONFIG_MONGODB_URL: $MONGO_ADMIN_PANEL_CONFIG
+      ME_CONFIG_MONGODB_URL: $MONGO://$MONGO_LOGIN:$MONGO_PASSWORD@$MONGO_SERVICE_NAME:$MONGO_SERVICE_PORT/
+    depends_on:
+      - mongo
 
   library:
     container_name: library-container
@@ -59,3 +63,7 @@ services:
       - counter
       - mongo
       - mongo-express
+
+# Как имя сервиса напрямую задать чтобы он их не склеивал, когда создает образ?
+# Секции именованного вольма и нетворк
+# Зачем докер-игнор?
