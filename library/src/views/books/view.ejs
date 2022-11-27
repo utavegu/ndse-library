@@ -39,16 +39,79 @@
           <br />
           <% if (book.fileBook) { %>
             <a href="/books/<%= book.id %>/download">Скачать книгу</a>
-          <% } else { %>
-            <span>Книга не загружена!</span>
-          <% } %>
-          
-          <br />
-          <a href="/books/">Смотреть всю библиотеку</a>
+            <% } else { %>
+              <span>Книга не загружена!</span>
+              <% } %>
+
+                <br />
+                <a href="/books/">Смотреть всю библиотеку</a>
 
         </div>
       </div>
     </div>
   </div>
+
+
+
+  <!-- БЛОК С ОТЗЫВАМИ -->
+
+  <h2>Привет <span id="username"><%= user.username %></span>!</h2>
+
+  <div class="container" style="display: grid; grid-template-columns: 1fr 3fr;">
+
+    <div>
+      <div>
+        <div class="form-group">
+          <label for="text">Сообщение</label>
+          <textarea placeholder="message" class="form-control" id="text"></textarea>
+        </div>
+        <div>
+          <button type="submit" id="send-room" class="btn btn-primary">Оставить отзыв</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="margin-left: 50px">
+      <div class="col-4">
+        <div id="list" class="list-group"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const roomName = location.pathname.split('/').pop();
+    const socket = io.connect('/', { query: `roomName=${roomName}` });
+    const boxList = document.querySelector('#list');
+    const inputUsername = document.querySelector('#username');
+    const inputText = document.querySelector('#text');
+    const sendRoom = document.querySelector('#send-room');
+
+    const getMessageTemplate = (msg) => {
+      return (
+        `
+          <div class="list-group-item list-group-item-action" style="border: 1px solid lightgray; width: 380px; margin: 10px 0 10px">
+            <div class="d-flex justify-content-between">
+              <small>${msg.username}</small>
+              <small class="text-muted">${msg.type}</small>
+            </div>
+            <p class="mb-1">${msg.text}</p>
+          </div>
+        `
+      );
+    };
+
+    socket.on('message-to-room', (msg) => {
+      const messageItem = getMessageTemplate(msg)
+      boxList.insertAdjacentHTML('beforeend', messageItem)
+    });
+
+    sendRoom.addEventListener('click', () => {
+      socket.emit('message-to-room', {
+        username: inputUsername.textContent,
+        text: inputText.value,
+      })
+    })
+  </script>
 
   <%- include('../layouts/layout-end') %>

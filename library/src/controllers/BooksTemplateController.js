@@ -135,11 +135,13 @@ class BooksTemplateController {
             // TODO: Это, вроде, можно одним запросом сделать
             await Book.findByIdAndUpdate(id, { $set: { counter: counter } })
             const book = await Book.findById(id).select('-__v')
+            const user = request.user || {username: 'Гость'}
             responce
               .status(200)
               .render("books/view", {
                 title: "Просмотр книги",
                 book,
+                user,
               })
           } catch (error) {
             console.error(error.message)
