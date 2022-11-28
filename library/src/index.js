@@ -1,16 +1,3 @@
-/*
-TODO-s:
-- Когда все заработает, зафиксируй версии монг в докер-композе/докерфайлах, если она там есть (возьми те, что как лэйтест на текущий момент)
-- Рефактор: сетап джээс (это уже после того, как пересмотришь лекцию)
-- композ дев (без енв переменных, билда и арг нод енв продакшн и с вольюмом для сорса... и шпаргалкой как его запускать)
-- Поменять логины, пароли и порты для подключения к монге
-- Чистка комментариев и переписывание/доделывание тудусов
-- При создании книги заметил странность - если создавать через шаблоны, то он будет выкидывать ошибку про незаполненность обязательных полей. Если через АПИ - подставит в них дефолтные значения модели. Хм.
-- Залогиненный пользователь походу после каждого изменения то ли в базе, то ли в коде отваливается. Ну это неправильно, разумеется.
-- Подчистить old-book и fakeDatabase - в старых ветках же они все равно остались
-- Books*Controller.protectBook - работают исправно, но разрабатывать мешают, потому пока отключил
-*/
-
 const express = require('express');
 const path = require('path');
 const http = require('http');
@@ -29,7 +16,7 @@ const booksAPIRouting = require('./routes/books-api');
 const booksTemplateRouting = require('./routes/books-templates');
 
 const verify = require('./utils/verify');
-const socketSetup = require('./utils/socket');
+const socketConnectionCallback = require('./utils/socket');
 
 const User = require('./models/user');
 
@@ -78,7 +65,7 @@ app
   .use('/books', booksTemplateRouting)
   .use(error404);
 
-io.on('connection', socketSetup);
+io.on('connection', socketConnectionCallback);
 
 const start = async () => {
   try {
