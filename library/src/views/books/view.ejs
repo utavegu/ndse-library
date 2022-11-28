@@ -54,6 +54,7 @@
 
 
   <!-- БЛОК С ОТЗЫВАМИ -->
+  <!-- TODO: Тут сделай нормально все - форма, обработчик сабмита, нэйминг кнопки, перевент дефолт, очистка поля, юльки и лишки, мапинг... -->
 
   <h2>Привет <span id="username"><%= user.username %></span>!</h2>
 
@@ -73,7 +74,22 @@
 
     <div class="row" style="margin-left: 50px">
       <div class="col-4">
-        <div id="list" class="list-group"></div>
+        <h3>Отзывы</h3>
+        <ul id="list" class="list-group" style="list-style: none">
+          <% book.feedbacks.map((feedback, idx)=> { %>
+            <li style="padding: 5px; margin-bottom: 3px; border: 1px solid lightgray">
+              <p>
+                <%= feedback.author %>
+              </p>
+              <p>
+                <%= feedback.review %>
+              </p>
+              <p>
+                <%= feedback.date %>
+              </p>
+            </li>
+            <% }) %>
+        </ul>
       </div>
     </div>
 
@@ -87,16 +103,18 @@
     const inputText = document.querySelector('#text');
     const sendRoom = document.querySelector('#send-room');
 
+    const scrollToLastReview = () => {
+      boxList.lastElementChild.scrollIntoView({behavior: "smooth"});
+    }
+
     const getMessageTemplate = (msg) => {
       return (
         `
-          <div class="list-group-item list-group-item-action" style="border: 1px solid lightgray; width: 380px; margin: 10px 0 10px">
-            <div class="d-flex justify-content-between">
-              <small>${msg.username}</small>
-              <small class="text-muted">${msg.type}</small>
-            </div>
-            <p class="mb-1">${msg.text}</p>
-          </div>
+          <li style="padding: 5px; margin-bottom: 3px; border: 1px solid lightgray">
+            <p>${msg.username}</p>
+            <p>${msg.text}</p>
+            <p>${msg.date}</p>
+          </li>
         `
       );
     };
@@ -104,13 +122,17 @@
     socket.on('message-to-room', (msg) => {
       const messageItem = getMessageTemplate(msg)
       boxList.insertAdjacentHTML('beforeend', messageItem)
+      scrollToLastReview();
     });
 
+    // По нормальному это должен быть не див, а форма. Тогда событие сабмит с превент дефолтом.
     sendRoom.addEventListener('click', () => {
       socket.emit('message-to-room', {
         username: inputUsername.textContent,
         text: inputText.value,
+        date: new Date().toISOString()
       })
+      inputText.value = ''
     })
   </script>
 

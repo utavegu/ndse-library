@@ -36,6 +36,10 @@ const bookSchema = new Schema({
     type: String,
     default: "0",
   },
+  feedbacks: {
+    type: Array,
+    default: [],
+  }
 })
 
 module.exports = model('Book', bookSchema)
