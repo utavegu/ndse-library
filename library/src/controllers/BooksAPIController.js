@@ -37,7 +37,6 @@ class BooksController {
         })
         callback.on("end", async () => {
           try {
-            // TODO: Это вроде асинхронщина и эвэйт тут лишним не будет, почитай на эту тему
             let parsedData = await JSON.parse(responceBody);
             let counter = parsedData.counter;
             // TODO: Это, вроде, можно одним запросом сделать
@@ -75,8 +74,7 @@ class BooksController {
   }
 
   async createBook(request, responce) {
-    const newBook = new Book({ ...request.body, fileBook: request.file ? request.file.path : "" })
-    // TODO: А вот каунтер убирай при создании каким-нибудь способом, либо всегда 0 (что и будет, если его убрать, так как в модели дефолтное значение как раз 0)... поидее в обект выше можно добавить "каунтер: 0, но эффект будет ровно тот же, как если он не прилетит из формы". Вообще для бронебойности можно руками выставлять в 0, на случай если какой-нибудь хакер решит-таки добавить это поле в тело запроса.
+    const newBook = new Book({ ...request.body, fileBook: request.file ? request.file.path : "", counter: "0" })
     try {
       await newBook.save()
       responce
@@ -95,9 +93,11 @@ class BooksController {
   async updateBook(request, responce) {
     const { id } = request.params
     try {
+      // Тут тоже что-то не в восторге с двойного запроса...
+      const book = await Book.findById(id).select('-__v')
       await Book.findByIdAndUpdate(
         id,
-        { ...request.body, fileBook: request.file ? request.file.path : '' }
+        { ...request.body, fileBook: request.file ? request.file.path : book.fileBook }
       )
       responce
         .status(301)

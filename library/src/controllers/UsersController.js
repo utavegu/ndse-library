@@ -1,7 +1,5 @@
 const User = require('../models/user');
 
-// TODO: Нужны ли асинк-эвэйты, если нет обращения к базе?
-
 class UsersController {
 
   renderHomePage(req, res) {
@@ -21,13 +19,13 @@ class UsersController {
   }
 
   async signUp(req, res) {
-    // неплохо бы еще проверять, что такого req.body.username уже нет в базе
+    // TODO: неплохо бы еще проверять, что такого req.body.username уже нет в базе
     if (req.body.username && req.body.password && req.body.repeatPassword && req.body.password === req.body.repeatPassword) {
       const newUser = new User(req.body)
       // TODO: права библиотекаря - текущая дата +3 месяца
       try {
         await newUser.save()
-        // По нормальному - редирект на страницу успешной регистрации и через 3 секунды с нее редирект на логина
+        // TODO: По нормальному - редирект на страницу успешной регистрации и через 3 секунды с нее редирект на логина
         console.log("Регистрация прошла успешна, теперь вы можете залогиниться!");
         res
           .status(201)

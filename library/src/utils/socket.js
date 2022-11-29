@@ -2,7 +2,7 @@ const Book = require('../models/book');
 
 module.exports = (socket) => {
   const { id } = socket;
-  console.info(`Socket connected: ${id}`);
+  // console.info(`Socket connected: ${id}`);
   const { roomName } = socket.handshake.query;
   socket.join(roomName);
   socket.on('message-to-room', (msg) => {
@@ -31,6 +31,6 @@ module.exports = (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.info(`Socket disconnected: ${id}`);
+    // console.info(`Socket disconnected: ${id}`);
   });
 }

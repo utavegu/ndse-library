@@ -29,7 +29,7 @@ const options = {
   passwordField: "password",
 }
 
-// TODO: А вот эти 3 штуки, интересно, можно ли тоже в одно слово завернуть... что-то типа const passportSetup = {...};
+// TODO: А вот эти 3 штуки, интересно, можно ли тоже в одно слово завернуть... что-то типа const passportSetup = {...};... Ну или просто функцией
 passport.use('local', new LocalStrategy(options, verify))
 
 passport.serializeUser((user, cb) => {
