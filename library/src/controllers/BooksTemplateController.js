@@ -32,7 +32,7 @@ class BooksTemplateController {
   }
 
   async createNewBook(request, responce) {
-    const newBook = new Book({ ...request.body, fileBook: request.file ? request.file.path : "" })
+    const newBook = new Book({ ...request.body, fileBook: request.file ? request.file.path : "", counter: "0" })
     try {
       await newBook.save()
       responce
@@ -101,10 +101,11 @@ class BooksTemplateController {
   async editBook(request, responce) {
     const { id } = request.params
     try {
+      // Тут тоже что-то не в восторге с двойного запроса...
+      const book = await Book.findById(id).select('-__v')
       await Book.findByIdAndUpdate(
         id,
-        // TODO: Вообще надо бы еще обработать ситуацию, что если книга уже была загружена, то не затирать путь до нее, если при редактировании поле было пустым
-        { ...request.body, fileBook: request.file ? request.file.path : '' }
+        { ...request.body, fileBook: request.file ? request.file.path : book.fileBook }
       )
       responce
         .status(301)
@@ -129,13 +130,12 @@ class BooksTemplateController {
         })
         callback.on("end", async () => {
           try {
-            // TODO: Это вроде асинхронщина и эвэйт тут лишним не будет, почитай на эту тему
             let parsedData = await JSON.parse(responceBody);
             let counter = parsedData.counter;
             // TODO: Это, вроде, можно одним запросом сделать
             await Book.findByIdAndUpdate(id, { $set: { counter: counter } })
             const book = await Book.findById(id).select('-__v')
-            const user = request.user || {username: 'Гость'}
+            const user = request.user || { username: 'Гость' }
             responce
               .status(200)
               .render("books/view", {

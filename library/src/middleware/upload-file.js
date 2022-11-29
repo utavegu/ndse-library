@@ -1,12 +1,8 @@
 const multer = require('multer');
 const path = require('path');
 
-// TODO: Малтер или нет, но русское имя книги зальется как абракадабра. И только имя, не контент.
-
 const multerSetup = {
   destination(req, file, cb) {
-    // TODO: __dirname и подобные получше изучить, полезные штуки.
-    // Походу из-за контейнера стало иначе работать, дирнейм помог. Вероятно, кстати, и у логгера по этой же причине борода.
     cb(null, path.join(__dirname, '../books/'));
   },
   filename(req, file, cb) {
