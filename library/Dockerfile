@@ -9,7 +9,7 @@ COPY package*.json ./
 COPY src/ ./
 
 # Наверное такое себе решение, но еще вчера он не ругался, что вышла новая версия нпм
-RUN npm install -g npm@8.19.3
+RUN npm install -g npm@9.1.2
 RUN npm i
 
 EXPOSE 3002

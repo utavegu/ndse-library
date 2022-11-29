@@ -79,7 +79,7 @@
           <% book.feedbacks.map((feedback, idx)=> { %>
             <li style="padding: 5px; margin-bottom: 3px; border: 1px solid lightgray">
               <p>
-                <%= feedback.author %>
+                <b><%= feedback.author %></b>
               </p>
               <p>
                 <%= feedback.review %>
@@ -111,7 +111,7 @@
       return (
         `
           <li style="padding: 5px; margin-bottom: 3px; border: 1px solid lightgray">
-            <p>${msg.username}</p>
+            <p><b>${msg.username}</b></p>
             <p>${msg.text}</p>
             <p>${msg.date}</p>
           </li>
