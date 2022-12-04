@@ -4,7 +4,6 @@ const http = require('http');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 const socketIO = require('socket.io');
 
 const logger = require('./middleware/logger');
@@ -15,35 +14,12 @@ const authRouting = require('./routes/auth');
 const booksAPIRouting = require('./routes/books-api');
 const booksTemplateRouting = require('./routes/books-templates');
 
-const verify = require('./utils/verify');
 const socketConnectionCallback = require('./utils/socket');
 
-const User = require('./models/user');
+const config = require('./config');
+const { PORT } = process.env;
 
-// Претендент на сетап-джээс
-const { PORT, MONGODB_URL, MONGODB_LOGIN, MONGODB_PASSWORD, DB_NAME } = process.env;
-
-// Претендент на сетап-джээс
-const options = {
-  usernameField: "username",
-  passwordField: "password",
-}
-
-// TODO: А вот эти 3 штуки, интересно, можно ли тоже в одно слово завернуть... что-то типа const passportSetup = {...};... Ну или просто функцией
-passport.use('local', new LocalStrategy(options, verify))
-
-passport.serializeUser((user, cb) => {
-  cb(null, user.id)
-})
-
-passport.deserializeUser(async (id, cb) => {
-  try {
-    const user = await User.findById(id).select('-__v')
-    cb(null, user)
-  } catch (error) {
-    return cb(error)
-  }
-})
+config.activatePassport();
 
 const app = express();
 // Способ запуска через http нужен для работы socketIO, в других случаях хватило бы просто app
@@ -69,14 +45,14 @@ io.on('connection', socketConnectionCallback);
 
 const start = async () => {
   try {
-    await mongoose.connect(MONGODB_URL, {
-      user: MONGODB_LOGIN,
-      pass: MONGODB_PASSWORD,
-      dbName: DB_NAME,
+    await mongoose.connect(config.db.connectionUrl, {
+      user: config.db.user,
+      pass: config.db.password,
+      dbName: config.db.database,
     });
     // было апп стало сервер
     server.listen(PORT, () => {
-      console.log(`Сервер библиотеки слушает на ${PORT} порту! Подключение к базе данных ${DB_NAME} произведено успешно!`);
+      console.log(`Сервер библиотеки слушает на ${PORT} порту! Подключение к базе данных ${config.db.database} произведено успешно!`);
     })
   } catch (error) {
     console.error(String(error))
