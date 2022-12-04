@@ -26,6 +26,20 @@ const app = express();
 const server = http.Server(app);
 const io = socketIO(server);
 
+/*
+TODO: При запуске через docker-compose.dev.yml (теперь и в прод-версии сломалось... но работало, пока в прод-версии не был закомментирован вольюм - это зацепка для отлова бага) выдает:
+/app/src/middleware/logger.js:10
+if (error) throw error;
+  [Error: EACCES: permission denied, open 'src/server.log'] {
+  errno: -13,
+  code: 'EACCES',
+  syscall: 'open',
+  path: 'src/server.log'
+}
+1) Простое решение - закомментировать строку с .use(logger) ниже
+2) Сложное - разбирайся, если будет время
+*/
+
 app
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
@@ -34,7 +48,7 @@ app
   .use(session({ secret: 'SECRET' }))
   .use(passport.initialize())
   .use(passport.session())
-  .use(logger)
+  // .use(logger)
   .use('/', mainPageRouting)
   .use('/user', authRouting)
   .use('/api/books', booksAPIRouting)
