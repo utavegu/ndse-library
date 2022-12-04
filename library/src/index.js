@@ -17,7 +17,6 @@ const booksTemplateRouting = require('./routes/books-templates');
 const socketConnectionCallback = require('./utils/socket');
 
 const config = require('./config');
-const { PORT } = process.env;
 
 config.activatePassport();
 
@@ -40,6 +39,8 @@ if (error) throw error;
 2) Сложное - разбирайся, если будет время
 */
 
+const { connectionUrl, user, password, database } = config.db
+
 app
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
@@ -59,14 +60,14 @@ io.on('connection', socketConnectionCallback);
 
 const start = async () => {
   try {
-    await mongoose.connect(config.db.connectionUrl, {
-      user: config.db.user,
-      pass: config.db.password,
-      dbName: config.db.database,
+    await mongoose.connect(connectionUrl, {
+      user: user,
+      pass: password,
+      dbName: database,
     });
     // было апп стало сервер
-    server.listen(PORT, () => {
-      console.log(`Сервер библиотеки слушает на ${PORT} порту! Подключение к базе данных ${config.db.database} произведено успешно!`);
+    server.listen(config.services.libraryPort, () => {
+      console.log(`Сервер библиотеки слушает на ${config.services.libraryPort} порту! Подключение к базе данных ${database} произведено успешно!`);
     })
   } catch (error) {
     console.error(String(error))
