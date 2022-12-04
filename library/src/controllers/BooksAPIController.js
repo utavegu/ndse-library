@@ -3,7 +3,7 @@ const path = require('path');
 
 const Book = require('../models/book');
 
-const COUNTER_URL = process.env.COUNTER_URL || 'http://counter:3001'; // TODO: В сетап джээс
+const COUNTER_URL = process.env.COUNTER_URL || 'http://counter:3001';
 
 class BooksController {
 

@@ -10,10 +10,13 @@ services:
     container_name: counter-container
     build: ./counter
     ports:
-      - 4001:3001
+      - $COUNTER_EXTERNAL_PORT:$COUNTER_INTERNAL_PORT
     environment:
-      - PORT=3001
+      - PORT=$COUNTER_INTERNAL_PORT
+      # А ты почему работаешь? Я же в этом сервиск енв-файл не подключал
       - REDIS_URL=redis://$REDIS_SERVICE_NAME
+    volumes:
+      - ./counter/src:/app/src
     depends_on:
       - storage
 
@@ -35,11 +38,11 @@ services:
     image: mongo-express
     restart: always
     ports:
-      - 8081:8081
+      - $MONGO_ADMIN_PANEL_EXTERNAL_PORT:$MONGO_ADMIN_PANEL_INTERNAL_PORT
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: $MONGO_LOGIN
       ME_CONFIG_MONGODB_ADMINPASSWORD: $MONGO_PASSWORD
-      ME_CONFIG_MONGODB_URL: mongodb://$MONGO_LOGIN:$MONGO_PASSWORD@$MONGO_SERVICE_NAME:$MONGO_SERVICE_PORT/
+      ME_CONFIG_MONGODB_URL: mongodb://$MONGO_LOGIN:$MONGO_PASSWORD@$MONGO_SERVICE_NAME:$MONGO_INTERNAL_PORT/
     depends_on:
       - mongo
 
@@ -47,18 +50,19 @@ services:
     container_name: library-container
     build: ./library
     ports:
-      - 4002:3002
-    env_file: .env
+      - $LIBRARY_EXTERNAL_PORT:$LIBRARY_INTERNAL_PORT
+  # env_file: .env ЭММММММ... ТО ЕСТЬ ТЫ НЕ НУЖЕН БЫЛ? ИЛИ ЭТО В НОВОЙ ВЕРСИИ ДОКЕРА ЧТО-ТО ПОМЕНЯЛОСЬ? НЕ РАБОТАЛО ЖЕ БЕЗ ТЕБЯ
     environment:
-      - PORT=3002
-      - COUNTER_URL=http://$COUNTER_SERVICE_NAME:$COUNTER_SERVICE_PORT
-      - MONGODB_URL=mongodb://$MONGO_SERVICE_NAME:$MONGO_SERVICE_PORT
+      - PORT=$LIBRARY_INTERNAL_PORT
+      - COUNTER_URL=http://$COUNTER_SERVICE_NAME:$COUNTER_INTERNAL_PORT
+      - MONGODB_URL=mongodb://$MONGO_SERVICE_NAME:$MONGO_INTERNAL_PORT
       - MONGODB_LOGIN=$MONGO_LOGIN
       - MONGODB_PASSWORD=$MONGO_PASSWORD
       - DB_NAME=$MONGO_DB_NAME
-    volumes:
+    # volumes:
+      # Так как это теперь продакшн-версия композа, этот вольюм отключаю. Но чтобы не забыть прием - просто закомментирую. Хотя, конечно, его лучше до последнего не выключать, чтобы потом после каждой правки в коде сборку не перезапускать
       # А вот это вторая составляющая разработки без перезапуска контейнера. Надо ее оставлять в композ-дев. В продакшн-композ это тащить не надо
-      - ./library/src:/app/src
+      # - ./library/src:/app/src
     depends_on:
       - counter
       - mongo

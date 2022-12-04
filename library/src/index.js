@@ -4,7 +4,6 @@ const http = require('http');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 const socketIO = require('socket.io');
 
 const logger = require('./middleware/logger');
@@ -15,40 +14,32 @@ const authRouting = require('./routes/auth');
 const booksAPIRouting = require('./routes/books-api');
 const booksTemplateRouting = require('./routes/books-templates');
 
-const verify = require('./utils/verify');
 const socketConnectionCallback = require('./utils/socket');
 
-const User = require('./models/user');
+const config = require('./config');
 
-// Претендент на сетап-джээс
-const { PORT, MONGODB_URL, MONGODB_LOGIN, MONGODB_PASSWORD, DB_NAME } = process.env;
-
-// Претендент на сетап-джээс
-const options = {
-  usernameField: "username",
-  passwordField: "password",
-}
-
-// TODO: А вот эти 3 штуки, интересно, можно ли тоже в одно слово завернуть... что-то типа const passportSetup = {...};... Ну или просто функцией
-passport.use('local', new LocalStrategy(options, verify))
-
-passport.serializeUser((user, cb) => {
-  cb(null, user.id)
-})
-
-passport.deserializeUser(async (id, cb) => {
-  try {
-    const user = await User.findById(id).select('-__v')
-    cb(null, user)
-  } catch (error) {
-    return cb(error)
-  }
-})
+config.activatePassport();
 
 const app = express();
 // Способ запуска через http нужен для работы socketIO, в других случаях хватило бы просто app
 const server = http.Server(app);
 const io = socketIO(server);
+
+/*
+TODO: При запуске через docker-compose.dev.yml (теперь и в прод-версии сломалось... но работало, пока в прод-версии не был закомментирован вольюм - это зацепка для отлова бага) выдает:
+/app/src/middleware/logger.js:10
+if (error) throw error;
+  [Error: EACCES: permission denied, open 'src/server.log'] {
+  errno: -13,
+  code: 'EACCES',
+  syscall: 'open',
+  path: 'src/server.log'
+}
+1) Простое решение - закомментировать строку с .use(logger) ниже
+2) Сложное - разбирайся, если будет время
+*/
+
+const { connectionUrl, user, password, database } = config.db
 
 app
   .use(express.json())
@@ -58,7 +49,7 @@ app
   .use(session({ secret: 'SECRET' }))
   .use(passport.initialize())
   .use(passport.session())
-  .use(logger)
+  // .use(logger)
   .use('/', mainPageRouting)
   .use('/user', authRouting)
   .use('/api/books', booksAPIRouting)
@@ -69,14 +60,14 @@ io.on('connection', socketConnectionCallback);
 
 const start = async () => {
   try {
-    await mongoose.connect(MONGODB_URL, {
-      user: MONGODB_LOGIN,
-      pass: MONGODB_PASSWORD,
-      dbName: DB_NAME,
+    await mongoose.connect(connectionUrl, {
+      user: user,
+      pass: password,
+      dbName: database,
     });
     // было апп стало сервер
-    server.listen(PORT, () => {
-      console.log(`Сервер библиотеки слушает на ${PORT} порту! Подключение к базе данных ${DB_NAME} произведено успешно!`);
+    server.listen(config.services.libraryPort, () => {
+      console.log(`Сервер библиотеки слушает на ${config.services.libraryPort} порту! Подключение к базе данных ${database} произведено успешно!`);
     })
   } catch (error) {
     console.error(String(error))

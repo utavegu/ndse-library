@@ -9,13 +9,12 @@ services:
     volumes:
       - ./data/redis:/data
 
-# npm ERR! enoent ENOENT: no such file or directory, open '/app/package.json'
   counter:
     container_name: counter-container
     image: node:18.12-alpine
     working_dir: /app
-    # volumes:
-      # - ./counter:/app
+    volumes:
+      - ./counter:/app
     ports:
       - 4001:3001
     environment:
@@ -50,14 +49,12 @@ services:
     depends_on:
       - mongo
 
-# no such file or directory, open '/app/package.json'
   library:
     container_name: library-container
     image: node:18.12-alpine
     working_dir: /app
     volumes:
-      # - ./library:/app
-      - ./library/src:/app/src
+      - ./library:/app
     ports:
       - 4002:3002
     environment:
