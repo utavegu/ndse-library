@@ -2,6 +2,10 @@ const router = require('express').Router();
 const fileMulter = require('../middleware/upload-file');
 // const BooksAPIController = require('../controllers/BooksAPIController');
 const BooksRepository = require('../classes/BooksRepository');
+const IoCContainer = require( "../container");
+
+// const BooksRepositoryInstance = new BooksRepository();
+const repo = IoCContainer.get(BooksRepository)
 
 router.post(
   '/',
@@ -10,7 +14,8 @@ router.post(
   // Двойные асинк-эвэйты и трай-кетчи
   async (request, responce) => {
     try {
-      const newBook = await BooksRepository.createBook(request.body)
+      // const newBook = await BooksRepositoryInstance.createBook(request.body)
+      const newBook = await repo.createBook(request.body)
       // А без таких извращений как-то можно?
       const convertedNewBook = JSON.parse(JSON.stringify(newBook))
       const fullBook = {
@@ -36,7 +41,8 @@ router.get(
   '/',
   async (_, responce) => {
     try {
-      const books = await BooksRepository.getBooks();
+      // const books = await BooksRepositoryInstance.getBooks();
+      const books = await repo.getBooks();
       responce
         .status(200)
         .json({
@@ -58,7 +64,8 @@ router.get(
   async (request, responce) => {
     const { id } = request.params
     try {
-      const book = await BooksRepository.getBook(id);
+      // const book = await BooksRepositoryInstance.getBook(id);
+      const book = await repo.getBook(id);
       if (book === null) throw new Error;
       responce
         .status(200)
@@ -88,7 +95,8 @@ router.put(
       const payload = request.body;
       const file = request.file;
       // В общем тут я вынужден маленько отойти от ТЗ. Непонятно как обновлять книгу без новых данных и видимо то что у меня тут есть работа с файлом в ТЗ тоже не учитывалось.
-      BooksRepository.updateBook(id, payload, file)
+      // BooksRepositoryInstance.updateBook(id, payload, file)
+      repo.updateBook(id, payload, file)
       responce
         .status(301)
         .redirect(`/api/books/${id}`)
@@ -110,7 +118,8 @@ router.delete(
   async (request, responce) => {
     const { id } = request.params;
     try {
-      const result = await BooksRepository.deleteBook(id);
+      // const result = await BooksRepositoryInstance.deleteBook(id);
+      const result = await repo.deleteBook(id);
       if (!result) throw new Error("Такая книга не найдена!");
       responce
         .status(200)
