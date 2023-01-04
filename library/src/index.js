@@ -13,6 +13,7 @@ const mainPageRouting = require('./routes/main');
 const authRouting = require('./routes/auth');
 const booksAPIRouting = require('./routes/books-api');
 const booksTemplateRouting = require('./routes/books-templates');
+const tsBooksAPIRouting = require('./routes/ts-books-api');
 
 const socketConnectionCallback = require('./utils/socket');
 
@@ -54,6 +55,7 @@ app
   .use('/user', authRouting)
   .use('/api/books', booksAPIRouting)
   .use('/books', booksTemplateRouting)
+  .use('/ts/books', tsBooksAPIRouting)
   .use(error404);
 
 io.on('connection', socketConnectionCallback);
