@@ -2,7 +2,7 @@ const router = require('express').Router();
 const fileMulter = require('../middleware/upload-file');
 // const BooksAPIController = require('../controllers/BooksAPIController');
 const BooksRepository = require('../classes/BooksRepository');
-const IoCContainer = require( "../container");
+const IoCContainer = require( "../config/container");
 
 // const BooksRepositoryInstance = new BooksRepository();
 const repo = IoCContainer.get(BooksRepository)
