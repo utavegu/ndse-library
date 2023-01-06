@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const http = require('http');
 const session = require('express-session');
-const mongoose = require('mongoose');
 const passport = require('passport');
 const socketIO = require('socket.io');
 
@@ -40,8 +39,6 @@ if (error) throw error;
 2) Сложное - разбирайся, если будет время
 */
 
-const { connectionUrl, user, password, database } = config.db
-
 app
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
@@ -62,14 +59,10 @@ io.on('connection', socketConnectionCallback);
 
 const start = async () => {
   try {
-    await mongoose.connect(connectionUrl, {
-      user: user,
-      pass: password,
-      dbName: database,
-    });
+    require("./config/db_connection");
     // было апп стало сервер
     server.listen(config.services.libraryPort, () => {
-      console.log(`Сервер библиотеки слушает на ${config.services.libraryPort} порту! Подключение к базе данных ${database} произведено успешно!`);
+      console.log(`Сервер библиотеки слушает на ${config.services.libraryPort} порту!`);
     })
   } catch (error) {
     console.error(String(error))
