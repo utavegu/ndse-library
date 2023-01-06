@@ -1,5 +1,7 @@
-const http = require('http');
-const path = require('path');
+// const http = require('http');
+// const path = require('path');
+require('reflect-metadata');
+const { decorate, injectable } = require('inversify');
 
 const Book = require('../models/book');
 
@@ -93,4 +95,6 @@ class BooksRepository {
 
 }
 
-module.exports = new BooksRepository();
+decorate(injectable(), BooksRepository)
+
+module.exports = BooksRepository;

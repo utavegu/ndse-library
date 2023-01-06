@@ -1,7 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "es5",
+    "lib": ["es6", "dom"],
+    "types": ["reflect-metadata"],
     "module": "commonjs",
+    "moduleResolution": "node",
+    // Пригодишься в следующем задании, когда будет миграция на ТС
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "rootDir": "./src",
     "sourceMap": true,
     "removeComments": true,
