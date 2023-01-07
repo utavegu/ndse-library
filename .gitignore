@@ -68,3 +68,5 @@ node_modules/
 library/src/server.log
 
 data/
+
+library/dist

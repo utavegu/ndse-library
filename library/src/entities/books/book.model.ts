@@ -1,4 +1,5 @@
-const { Schema, model } = require('mongoose');
+import { Schema, model, Document } from 'mongoose';
+import { IBook } from './book.interface';
 
 const bookSchema = new Schema({
   title: {
@@ -12,7 +13,7 @@ const bookSchema = new Schema({
     default: "Краткое описание книги",
   },
   authors: {
-    type: String,
+    type: [String],
     required: true,
     default: "Автор(-ы)",
   },
@@ -31,15 +32,7 @@ const bookSchema = new Schema({
   fileBook: {
     type: String,
     default: "Путь до книги для скачивания",
-  },
-  counter: {
-    type: String,
-    default: "0",
-  },
-  feedbacks: {
-    type: Array,
-    default: [],
   }
 })
 
-module.exports = model('Book', bookSchema)
+export const BookModel = model<IBook & Document>('Book', bookSchema)

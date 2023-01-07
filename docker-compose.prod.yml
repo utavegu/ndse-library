@@ -1,24 +1,24 @@
 services:
 
-  storage:
-    container_name: redis-storage-container
-    image: redis:7.0
-    volumes:
-      - ./data/redis:/data
+  # storage:
+  #   container_name: redis-storage-container
+  #   image: redis:7.0
+  #   volumes:
+  #     - ./data/redis:/data
 
-  counter:
-    container_name: counter-container
-    build: ./counter
-    ports:
-      - $COUNTER_EXTERNAL_PORT:$COUNTER_INTERNAL_PORT
-    environment:
-      - PORT=$COUNTER_INTERNAL_PORT
-      # А ты почему работаешь? Я же в этом сервиск енв-файл не подключал
-      - REDIS_URL=redis://$REDIS_SERVICE_NAME
-    volumes:
-      - ./counter/src:/app/src
-    depends_on:
-      - storage
+  # counter:
+  #   container_name: counter-container
+  #   build: ./counter
+  #   ports:
+  #     - $COUNTER_EXTERNAL_PORT:$COUNTER_INTERNAL_PORT
+  #   environment:
+  #     - PORT=$COUNTER_INTERNAL_PORT
+  #     # А ты почему работаешь? Я же в этом сервиск енв-файл не подключал
+  #     - REDIS_URL=redis://$REDIS_SERVICE_NAME
+  #   volumes:
+  #     - ./counter/src:/app/src
+  #   depends_on:
+  #     - storage
 
   # Тут нигде не сказано, но монга доступна вот на этом порту: 27017 (внешнем или внутреннем?)
   mongo:
@@ -64,6 +64,6 @@ services:
       # А вот это вторая составляющая разработки без перезапуска контейнера. Надо ее оставлять в композ-дев. В продакшн-композ это тащить не надо
       # - ./library/src:/app/src
     depends_on:
-      - counter
+      # - counter
       - mongo
       - mongo-express

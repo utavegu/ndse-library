@@ -1,6 +1,6 @@
 require('reflect-metadata');
 const { Container, decorate, injectable } = require('inversify');
-const BooksRepository = require('../classes/BooksRepository');
+import { BooksRepository } from '../entities/books/books.service';
 
 decorate(injectable(), BooksRepository)
 
@@ -11,4 +11,4 @@ IoCContainer
   .toSelf()
   .inSingletonScope();
 
-module.exports = IoCContainer;
+export { IoCContainer };

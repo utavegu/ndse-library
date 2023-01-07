@@ -6,8 +6,7 @@ const { connectionUrl, user, password, database } = config.db
 
   ; (async () => {
     mongoose.connection
-      .on('error', err => {
-        logError(err); // что за logError?
+      .on('error', (err: Error) => {
         console.error(err);
       })
       .on('connected', () => {
