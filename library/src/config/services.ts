@@ -7,4 +7,4 @@ const servicesSetup = {
   libraryPort: process.env.LIBRARY_INTERNAL_PORT || 3002,
 }
 
-module.exports = servicesSetup;
+export = servicesSetup;
